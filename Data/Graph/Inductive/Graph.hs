@@ -297,6 +297,7 @@ delEdge :: (DynGraph gr) => Edge -> gr a b -> gr a b
 delEdge (v,w) g = case match v g of
                     (Nothing,_)          -> g
                     (Just (p,v',l,s),g') -> (p,v',l,filter ((/=w).snd) s) & g'
+{-# NOINLINE [0] delEdge #-}
 
 -- | Remove an 'LEdge' from the 'Graph'.
 --

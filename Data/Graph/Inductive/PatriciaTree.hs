@@ -13,6 +13,8 @@
 --
 -- * 'Data.Graph.Inductive.Graph.insEdge'
 --
+-- * 'Data.Graph.Inductive.Graph.delEdge'
+--
 -- * 'Data.Graph.Inductive.Graph.gmap'
 --
 -- * 'Data.Graph.Inductive.Graph.nmap'
@@ -179,6 +181,18 @@ fastInsEdge (v, w, l) (Gr g) = g2 `seq` Gr g2
 
     addS' (ps, l', ss) = (ps, l', IM.insertWith addLists w [l] ss)
     addP' (ps, l', ss) = (IM.insertWith addLists v [l] ps, l', ss)
+
+{-# RULES
+      "delEdge/Data.Graph.Inductive.PatriciaTree"  delEdge = fastDelEdge
+  #-}
+fastDelEdge :: Edge -> Gr a b -> Gr a b
+fastDelEdge (v, w) (Gr g) = g2 `seq` Gr g2
+  where
+    g1 = IM.adjust delS' v g
+    g2 = IM.adjust delP' w g1
+
+    delS' (ps, l', ss) = (ps, l', IM.delete w ss)
+    delP' (ps, l', ss) = (IM.delete v ps, l', ss)
 
 {-# RULES
       "gmap/Data.Graph.Inductive.PatriciaTree"  gmap = fastGMap
